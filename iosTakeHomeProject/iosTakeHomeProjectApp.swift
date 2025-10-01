@@ -18,6 +18,11 @@ struct iosTakeHomeProjectApp: App {
                         Text("Home")
                         
                     }
+                SettingsView()
+                    .tabItem {
+                        Symbols.gear
+                        Text("Settings")
+                    }
             }
         }
     }
