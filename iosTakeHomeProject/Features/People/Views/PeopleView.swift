@@ -11,6 +11,7 @@ struct PeopleView: View {
     private let columns = Array(repeating: GridItem(.flexible()), count: 2)
     @State private var shouldShowCreate = false
     @StateObject private var vm = PeopleViewModel()
+    @State private var shouldShowSuccess = false
     
     
     var body: some View {
@@ -55,11 +56,30 @@ struct PeopleView: View {
                 
             }
             .sheet(isPresented: $shouldShowCreate) {
-                CreateView()
+                CreateView {
+                    withAnimation(.spring().delay(0.25)){
+                        self.shouldShowSuccess.toggle()
+                    }
+
+                }
             }
             .alert(isPresented: $vm.hasError, error: vm.error) {
                 Button("Retry") {
                     vm.fetchUsers()
+                }
+            }
+            .overlay {
+                if shouldShowSuccess {
+                    CheckmarkPopoverView()
+                        .transition(.scale.combined(with: .opacity))
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                withAnimation(.spring()) {
+                                    self.shouldShowSuccess.toggle()
+                                }
+                            }
+                        
+                        }
                 }
             }
             
