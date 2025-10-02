@@ -45,8 +45,11 @@ struct PeopleView: View {
 
                 }
             }
-            .onAppear {
-                vm.fetchUsers()
+            .task {
+                
+                   await vm.fetchUsers()
+                
+                
               /*  do {
                     let res = try StaticJsonMapper.decode(file: "UsersStaticData", type: UsersResponse.self)
                     users = res.data
@@ -66,7 +69,10 @@ struct PeopleView: View {
             }
             .alert(isPresented: $vm.hasError, error: vm.error) {
                 Button("Retry") {
-                    vm.fetchUsers()
+                    Task {
+                        await vm.fetchUsers()
+                    }
+                    
                 }
             }
             .overlay {

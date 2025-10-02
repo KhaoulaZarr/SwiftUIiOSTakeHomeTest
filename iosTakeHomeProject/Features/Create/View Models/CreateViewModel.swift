@@ -16,9 +16,10 @@ final class CreateViewModel: ObservableObject {
     
     private let validator = CreateValidator()
     
-    func create() {
+    @MainActor
+    func create() async {
         
-        do {
+      /*  do {
             try validator.validate(person)
             
             state = .submitting
@@ -46,6 +47,30 @@ final class CreateViewModel: ObservableObject {
             if let validationError = error as? CreateValidator.createValidatorError {
                 self.error = .validation(error: validationError)
             }
+        }*/
+        
+        do {
+            try validator.validate(person)
+            state = .submitting
+            
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            let data = try encoder.encode(person)
+            try await NetworkingManager.shared.request(.create(submissionData: data))
+            self.state = .successful
+            
+        } catch {
+            self.hasError = true
+            self.state = .unsuccessful
+            switch error {
+            case is NetworkingManager.NetworkingError:
+                self.error = .networking(error: error as! NetworkingManager.NetworkingError)
+            case is CreateValidator.createValidatorError:
+                self.error = .validation(error: error as! CreateValidator.createValidatorError)
+            default:
+                self.error = .system(Error: error)
+            }
+        
         }
         
     }
@@ -67,6 +92,7 @@ extension CreateViewModel {
     enum FormError: LocalizedError {
         case networking(error: LocalizedError)
         case validation(error: LocalizedError)
+        case system(Error: Error)
     }
 }
 
@@ -76,6 +102,9 @@ extension CreateViewModel.FormError {
         case .networking(let err),
                 .validation(let err):
             return err.errorDescription
+        case .system(let err):
+            return err.localizedDescription
+            
         }
     }
 }

@@ -39,13 +39,13 @@ struct DetailView: View {
             }
         }
         .navigationTitle("Details")
-        .onAppear {
+        .task {
           /*  do {
                 userInfo = try StaticJsonMapper.decode(file: "SingleUserData", type: UserDetailResponse.self)
             } catch {
                 print(error)
             }*/
-            vm.fetchDetails(for: userId)
+            await vm.fetchDetails(for: userId)
         }
         .alert(isPresented: $vm.hasError, error: vm.error) {}
     }
