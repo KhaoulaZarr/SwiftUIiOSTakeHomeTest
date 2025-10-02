@@ -13,15 +13,15 @@ final class NetworkingManager {
     
     private init() {}
     
-    func request<T: Codable>(
-        methodType: MethodeType = .GET,
-        _ absoluteURL: String, type: T.Type, completion: @escaping (Result<T, Error>)-> Void) {
+    func request<T: Codable>(_
+        endPoint: EndPoint, type: T.Type, completion: @escaping (Result<T, Error>)-> Void) {
         
-        guard let url = URL(string: absoluteURL) else {
+        guard let url = endPoint.url else {
             completion(.failure(NetworkingError.invalidUrl))
             return
         }
-            let  request = buildRequest(from: url, methodType: methodType)
+        print("url endpoint \(url.absoluteString) \(endPoint.methodType)")
+        let  request = buildRequest(from: url, methodType: endPoint.methodType)
         
         let dataTask = URLSession.shared.dataTask(with: request) { data, response, error in
             if error != nil {
@@ -48,21 +48,20 @@ final class NetworkingManager {
                 completion(.success(res))
                 
             } catch {
+                print("error is \(error)")
                 completion(.failure(NetworkingError.failedToDecode(error: error)))
             }
         }
         dataTask.resume()
     }
     
-    func request(
-        methodType: MethodeType = .GET,
-        _ absoluteURL: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let url = URL(string: absoluteURL) else {
+    func request(_ endpoint: EndPoint, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let url = endpoint.url else {
             completion(.failure(NetworkingError.invalidUrl))
             return
         }
             
-        let  request = buildRequest(from: url, methodType: methodType)
+        let  request = buildRequest(from: url, methodType: endpoint.methodType)
         let dataTask = URLSession.shared.dataTask(with: request) { data, response, error in
             if (error != nil) {
                 completion(.failure(NetworkingError.custom(error: error!)))
@@ -113,17 +112,10 @@ extension NetworkingManager.NetworkingError {
 }
 
 
-extension NetworkingManager {
-    enum MethodeType {
-        case GET
-        case POST(data: Data?)
-    }
-}
-
 private extension NetworkingManager {
     
     func buildRequest(from url: URL,
-                      methodType: MethodeType)-> URLRequest {
+                      methodType: EndPoint.MethodeType)-> URLRequest {
         
         var request = URLRequest(url: url)
         request.addValue("reqres-free-v1", forHTTPHeaderField: "x-api-key")
