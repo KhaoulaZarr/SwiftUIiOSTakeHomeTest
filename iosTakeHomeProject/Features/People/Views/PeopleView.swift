@@ -12,6 +12,7 @@ struct PeopleView: View {
     @State private var shouldShowCreate = false
     @StateObject private var vm = PeopleViewModel()
     @State private var shouldShowSuccess = false
+    @State private var hasAppeared = false
     
     
     var body: some View {
@@ -44,10 +45,16 @@ struct PeopleView: View {
                     create
 
                 }
+                ToolbarItem (placement: .navigationBarLeading) {
+                    refresh
+                }
             }
             .task {
-                
-                   await vm.fetchUsers()
+                if !hasAppeared {
+                    await vm.fetchUsers()
+                    hasAppeared = true
+                }
+                  
                 
                 
               /*  do {
@@ -118,6 +125,18 @@ private extension PeopleView {
         }
         .disabled(vm.isLoading)
 
+    }
+    
+    var refresh: some View {
+        Button {
+            Task {
+                await vm.fetchUsers()
+            }
+        } label: {
+            Symbols.refresh
+            
+        }
+        .disabled(vm.isLoading)
     }
         
 }
