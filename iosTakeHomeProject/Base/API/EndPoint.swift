@@ -6,7 +6,6 @@
 //
 import Foundation
 
-
 enum EndPoint {
     case people(page: Int)
     case detail(id:Int)
@@ -73,3 +72,4 @@ extension EndPoint {
     }
     
 }
+
