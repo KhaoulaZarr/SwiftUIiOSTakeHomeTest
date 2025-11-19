@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import XCTest
 
 class MockUrlSessionProtocol: URLProtocol {
     
@@ -21,8 +20,7 @@ class MockUrlSessionProtocol: URLProtocol {
     
     override func startLoading() {
         guard let handler = MockUrlSessionProtocol.loadingHandler else {
-            XCTFail("Loading handler is not set.")
-            return
+            fatalError("Loading handler is not set.")
         }
         let (response, data) = handler()
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)

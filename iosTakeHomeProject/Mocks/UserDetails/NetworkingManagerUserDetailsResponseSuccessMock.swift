@@ -5,8 +5,8 @@
 //  Created by Khawla Zarrami on 17/11/2025.
 //
 
+#if DEBUG
 import Foundation
-@testable import iosTakeHomeProject
 
 class NetworkingManagerUserDetailsResponseSuccessMock: NetworkingManagerImpl {
     
@@ -17,3 +17,5 @@ class NetworkingManagerUserDetailsResponseSuccessMock: NetworkingManagerImpl {
     func request(session: URLSession, _ endpoint: iosTakeHomeProject.EndPoint) async throws {}
     
 }
+
+#endif

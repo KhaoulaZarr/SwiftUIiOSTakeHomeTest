@@ -4,11 +4,13 @@
 //
 //  Created by Khawla Zarrami on 17/11/2025.
 //
+#if DEBUG
 
 import Foundation
-@testable import iosTakeHomeProject
 
 struct CreateValidatorSuccessMock: CreateValidatorImpl {
     func validate(_ person: iosTakeHomeProject.NewPerson) throws {}
         
 }
+
+#endif

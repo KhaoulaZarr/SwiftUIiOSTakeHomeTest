@@ -11,7 +11,7 @@ struct PillView: View {
     let id: Int
     
     var body: some View {
-        Text("# \(id)")
+        Text("#\(id)")
             .font(.system(.caption, design: .rounded)
             .bold()
         )
