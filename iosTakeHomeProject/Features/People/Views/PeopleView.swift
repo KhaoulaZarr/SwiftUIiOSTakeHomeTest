@@ -150,7 +150,7 @@ private extension PeopleView {
                     .bold()
                 )
         }
-        .disabled(vm.isLoading)
+        .disabled(vm.isLoading).accessibilityIdentifier("createBtn")
 
     }
     
